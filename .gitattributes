@@ -1,0 +1,24 @@
+# Wails 分支 merge 策略：当从 main 合并时，以下文件使用 wails 分支的版本
+internal/* merge=ours
+go.mod merge=ours
+go.sum merge=ours
+main.go merge=ours
+frontend/package.json merge=ours
+.gotattributes merge=ours
+wails.json merge=ours
+
+# Go 语言文件
+*.go text eol=lf
+
+# 前端文件
+*.ts text eol=lf
+*.vue text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+
+# 配置文件
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf

@@ -1,19 +1,31 @@
-node_modules
-dist
-out
-.DS_Store
-.eslintcache
-*.log*
-.vscode/extensions.json
-.vscode/launch.json
-.vscode/settings.json
-/.history
-.idea
+# Go
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# uTools 源码缓存（用于同步 API Types）
-.ztools-api-types-source/
-/.cursor
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Wails generated bindings
+frontend/bindings/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+/.history
 /.shared
-.pnpm-store/*
-_*
-/.sanshu-memory
+
+# OS
+.DS_Store
+Thumbs.db
+*.log*
+
+# Planning
+.sisyphus/
