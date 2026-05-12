@@ -2,8 +2,39 @@ package launcher
 
 import (
 	"os/exec"
+	"runtime"
 	"strings"
 )
+
+func LaunchApp(appPath string) error {
+	executable, args := parseCommandString(appPath)
+	if executable == "" {
+		return nil
+	}
+	switch runtime.GOOS {
+	case "darwin":
+		return launchDarwin(executable, args)
+	case "windows":
+		return launchWindows(executable, args)
+	default:
+		return launchDefault(executable, args)
+	}
+}
+
+func launchDefault(executable string, args []string) error {
+	return exec.Command(executable, args...).Start()
+}
+
+func launchDarwin(executable string, args []string) error {
+	a := append([]string{"-a", executable}, args...)
+	return exec.Command("open", a...).Start()
+}
+
+func launchWindows(executable string, args []string) error {
+	a := append([]string{"/C", "start", `""`, executable})
+	a = append(a, args...)
+	return exec.Command("cmd", a...).Start()
+}
 
 func parseCommandString(cmd string) (string, []string) {
 	var parts []string
@@ -37,11 +68,4 @@ func parseCommandString(cmd string) (string, []string) {
 	return parts[0], parts[1:]
 }
 
-func LaunchApp(appPath string) error {
-	executable, args := parseCommandString(appPath)
-	if executable == "" {
-		return nil
-	}
-	cmd := exec.Command(executable, args...)
-	return cmd.Start()
-}
+

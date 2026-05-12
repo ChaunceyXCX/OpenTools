@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ClipboardService } from '../../bindings/github.com/ChaunceyXCX/OpenTools/internal/api/index'
 
@@ -7,6 +7,7 @@ const { t } = useI18n()
 const items = ref<any[]>([])
 const loading = ref(false)
 const searchQuery = ref('')
+let refreshTimer: any = null
 
 const filtered = computed(() => {
   if (!searchQuery.value) return items.value
@@ -14,7 +15,8 @@ const filtered = computed(() => {
   return items.value.filter((i: any) => i.content?.toLowerCase().includes(q))
 })
 
-onMounted(() => load())
+onMounted(() => { load(); refreshTimer = setInterval(load, 3000) })
+onUnmounted(() => clearInterval(refreshTimer))
 
 async function load() {
   loading.value = true
