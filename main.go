@@ -22,6 +22,8 @@ func main() {
 		log.Fatalf("failed to init database: %v", err)
 	}
 
+	clipSvc := api.NewClipboardService()
+
 	app := application.New(application.Options{
 		Name:        "ZTools",
 		Description: "A high-performance launcher and plugin platform",
@@ -29,6 +31,7 @@ func main() {
 			application.NewService(&GreetService{}),
 			application.NewService(api.NewDatabaseService()),
 			application.NewService(api.NewCommandsService()),
+			application.NewService(clipSvc),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
@@ -94,8 +97,11 @@ func main() {
 		mainWin.Show()
 	})
 
+	clipSvc.StartMonitor()
+
 	app.OnShutdown(func() {
 		log.Println("[ZTools] shutting down")
+		clipSvc.StopMonitor()
 		api.CloseDatabase()
 	})
 
