@@ -9,6 +9,7 @@ import (
 	"github.com/ChaunceyXCX/OpenTools/internal/api"
 	"github.com/ChaunceyXCX/OpenTools/internal/core/httpserver"
 	"github.com/ChaunceyXCX/OpenTools/internal/core/mcp"
+	"github.com/ChaunceyXCX/OpenTools/internal/core/updater"
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 )
@@ -111,6 +112,8 @@ func main() {
 	go mcp.StartMCPServer()
 
 	clipSvc.StartMonitor()
+
+	log.Printf("[ZTools] version %s", updater.CurrentVersion())
 
 	app.OnShutdown(func() {
 		log.Println("[ZTools] shutting down")
