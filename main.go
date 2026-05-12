@@ -28,6 +28,7 @@ func main() {
 	clipSvc := api.NewClipboardService()
 	pluginSvc := api.NewPluginService()
 	historySvc := api.NewHistoryService()
+	zbrowserSvc := api.NewZBrowserService()
 
 	app := application.New(application.Options{
 		Name:        "ZTools",
@@ -39,6 +40,7 @@ func main() {
 			application.NewService(clipSvc),
 			application.NewService(pluginSvc),
 			application.NewService(historySvc),
+			application.NewService(zbrowserSvc),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
