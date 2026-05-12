@@ -6,6 +6,7 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/chromedp/chromedp v0.15.1
 	github.com/dop251/goja v0.0.0-20260311135729-065cd970411c
+	github.com/evanw/esbuild v0.28.0
 	github.com/mozillazg/go-pinyin v0.21.0
 	github.com/studio-b12/gowebdav v0.12.0
 	github.com/wailsapp/wails/v3 v3.0.0-alpha.90
