@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { setLanguage } from '../i18n'
+import { setLanguage, setTheme, setColor, getStoredTheme, getStoredColor } from '../i18n'
 import { DatabaseService } from '../../bindings/github.com/ChaunceyXCX/OpenTools/internal/api/index'
 
 const { t, locale } = useI18n()
 const lang = locale as any
+const currentTheme = ref(getStoredTheme())
+const currentColor = ref(getStoredColor())
+const colors = ['blue', 'purple', 'green', 'orange', 'red', 'pink']
+
+function switchTheme(theme: string) { currentTheme.value = theme; setTheme(theme) }
+function switchColor(color: string) { currentColor.value = color; setColor(color) }
 
 const dbGet = ref('')
 const dbSetKey = ref('')
@@ -38,9 +44,23 @@ function switchLang(lang: string) { setLanguage(lang) }
     <!-- Language -->
     <section class="section">
       <h3>{{ $t('settings.language') }}</h3>
-      <div class="lang-row">
-        <button :class="['lang-btn', { active: lang === 'zh-CN' }]" @click="switchLang('zh-CN')">中文</button>
-        <button :class="['lang-btn', { active: lang === 'en-US' }]" @click="switchLang('en-US')">English</button>
+      <div class="btn-row">
+        <button :class="['opt-btn', { active: lang === 'zh-CN' }]" @click="switchLang('zh-CN')">中文</button>
+        <button :class="['opt-btn', { active: lang === 'en-US' }]" @click="switchLang('en-US')">English</button>
+      </div>
+    </section>
+
+    <!-- Theme -->
+    <section class="section">
+      <h3>Theme</h3>
+      <div class="btn-row">
+        <button :class="['opt-btn', { active: currentTheme === 'dark' }]" @click="switchTheme('dark')">Dark</button>
+        <button :class="['opt-btn', { active: currentTheme === 'light' }]" @click="switchTheme('light')">Light</button>
+      </div>
+      <div class="color-row">
+        <button v-for="c in colors" :key="c"
+          :class="['color-dot', `theme-${c}`, { active: currentColor === c }]"
+          @click="switchColor(c)"></button>
       </div>
     </section>
 
@@ -112,7 +132,16 @@ function switchLang(lang: string) { setLanguage(lang) }
 kbd { padding: 2px 8px; background: var(--control-bg); border-radius: 4px; font-size: 11px; color: var(--text-color); border: 1px solid var(--border-color); }
 .about { border-bottom: none; }
 .about-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; color: var(--text-secondary); }
-.lang-row { display: flex; gap: 8px; }
-.lang-btn { padding: 6px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--control-bg); color: var(--text-color); cursor: pointer; font-size: 13px; }
-.lang-btn.active { border-color: var(--primary-color); color: var(--primary-color); background: color-mix(in srgb, var(--primary-color) 15%, transparent); }
+.btn-row { display: flex; gap: 8px; }
+.opt-btn { padding: 6px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--control-bg); color: var(--text-color); cursor: pointer; font-size: 13px; }
+.opt-btn.active { border-color: var(--primary-color); color: var(--primary-color); background: color-mix(in srgb, var(--primary-color) 15%, transparent); }
+.color-row { display: flex; gap: 8px; margin-top: 8px; }
+.color-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.15s; }
+.color-dot.active { border-color: var(--text-color); transform: scale(1.15); }
+.color-dot.theme-blue { background: #4a90d9; }
+.color-dot.theme-purple { background: #7c3aed; }
+.color-dot.theme-green { background: #059669; }
+.color-dot.theme-orange { background: #ea580c; }
+.color-dot.theme-red { background: #dc2626; }
+.color-dot.theme-pink { background: #db2777; }
 </style>

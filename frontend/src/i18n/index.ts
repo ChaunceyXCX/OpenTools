@@ -21,3 +21,26 @@ export function setLanguage(lang: string) {
     localStorage.setItem('opentools-lang', lang)
   }
 }
+
+export function getStoredTheme() {
+  return typeof localStorage !== 'undefined' ? (localStorage.getItem('opentools-theme') || 'dark') : 'dark'
+}
+
+export function getStoredColor() {
+  return typeof localStorage !== 'undefined' ? (localStorage.getItem('opentools-color') || 'blue') : 'blue'
+}
+
+export function setTheme(theme: string) {
+  document.documentElement.setAttribute('data-theme', theme)
+  if (typeof localStorage !== 'undefined') localStorage.setItem('opentools-theme', theme)
+}
+
+export function setColor(color: string) {
+  document.documentElement.className = `theme-${color}`
+  if (typeof localStorage !== 'undefined') localStorage.setItem('opentools-color', color)
+}
+
+export function initTheme() {
+  setTheme(getStoredTheme())
+  setColor(getStoredColor())
+}
