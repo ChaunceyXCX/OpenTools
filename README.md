@@ -166,6 +166,15 @@ OpenTools/
 
 `wails` 分支定期从 `main` merge 上游更新，新功能同步移植到 Go 实现。
 
+> **关于项目名称变更**：
+> 本项目从 [ZToolsCenter/ZTools](https://github.com/ZToolsCenter/ZTools) fork 而来。`main` 分支保持与原上游同步，
+> `wails` 分支在重构的同时将应用名改为 **OpenTools**，以标识这是一个独立的 Wails 移植版本。
+>
+> 重命名涉及范围：应用名、窗口标题、构建产物、数据目录 (`~/.ztools/` → `~/.opentools/`)、
+> 产品标识符 (`link.eiot.ztools` → `com.opentools.app`)、API 返回值、Linux 桌面文件、MCP 服务名等。
+>
+> **保留不变**：`window.ztools.*` 插件 API 名称（插件生态标准）、`ZTOOLS/` 数据库命名空间（数据兼容）。
+
 ## 📄 许可证
 
 [MIT](./LICENSE)

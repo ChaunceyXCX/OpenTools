@@ -165,6 +165,17 @@ OpenTools/
 
 The `wails` branch periodically merges from `main` to stay up-to-date with upstream changes.
 
+> **About the rename**: This project was forked from [ZToolsCenter/ZTools](https://github.com/ZToolsCenter/ZTools).
+> The `main` branch tracks upstream. The `wails` branch renames the application to **OpenTools** to
+> distinguish this independent Wails port.
+>
+> Rename scope: app name, window title, binary, data dir (`~/.ztools/` → `~/.opentools/`),
+> product identifier (`link.eiot.ztools` → `com.opentools.app`), API returns, Linux desktop file,
+> MCP service name, etc.
+>
+> **Unchanged**: `window.ztools.*` plugin API name (ecosystem standard), `ZTOOLS/` database namespace
+> (data compatibility).
+
 ## 📄 License
 
 [MIT](./LICENSE)
