@@ -2,24 +2,31 @@
 import { useCommandStore } from '../stores/commandStore'
 
 const store = useCommandStore()
+
+function onClick(cmd: any) {
+  store.launch(cmd)
+}
 </script>
 
 <template>
   <div class="results">
     <div
       v-for="cmd in store.results"
-      :key="cmd.id"
+      :key="cmd.name"
       class="result-item"
+      @click="onClick(cmd)"
     >
       <div class="item-icon">
-        {{ cmd.icon ? '🔍' : '⚡' }}
+        <img v-if="cmd.icon" :src="cmd.icon" class="icon-img" />
+        <span v-else class="icon-fallback">⚡</span>
       </div>
       <div class="item-info">
         <div class="item-name">{{ cmd.name }}</div>
-        <div class="item-type">{{ cmd.type }}{{ cmd.subType ? ' · ' + cmd.subType : '' }}</div>
+        <div class="item-path">{{ cmd.path }}</div>
       </div>
     </div>
-    <div v-if="store.results.length === 0 && store.query" class="empty">
+    <div v-if="store.loading" class="status">Scanning applications...</div>
+    <div v-else-if="store.results.length === 0 && store.query" class="status">
       No results for "{{ store.query }}"
     </div>
   </div>
@@ -44,23 +51,35 @@ const store = useCommandStore()
   background: #2a3748;
 }
 .item-icon {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  flex-shrink: 0;
+}
+.icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.icon-fallback {
+  font-size: 18px;
 }
 .item-name {
   font-size: 14px;
   font-weight: 500;
   color: #e0e0e0;
 }
-.item-type {
+.item-path {
   font-size: 11px;
   color: #6a7a8e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
 }
-.empty {
+.status {
   text-align: center;
   padding: 20px;
   color: #6a7a8e;

@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useCommandStore } from '../stores/commandStore'
 
 const store = useCommandStore()
+
+onMounted(() => {
+  store.loadCommands()
+})
 </script>
 
 <template>

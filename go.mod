@@ -3,6 +3,7 @@ module github.com/ChaunceyXCX/OpenTools
 go 1.25
 
 require (
+	github.com/mozillazg/go-pinyin v0.21.0
 	github.com/wailsapp/wails/v3 v3.0.0-alpha.90
 	go.etcd.io/bbolt v1.4.3
 )
