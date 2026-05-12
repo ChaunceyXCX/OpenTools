@@ -33,8 +33,8 @@ func main() {
 	zbrowserSvc := api.NewZBrowserService()
 
 	app := application.New(application.Options{
-		Name:        "ZTools",
-		Description: "A high-performance launcher and plugin platform",
+		Name:        "OpenTools",
+		Description: "Open source launcher and plugin platform",
 		Services: []application.Service{
 			application.NewService(&GreetService{}),
 			application.NewService(api.NewDatabaseService()),
@@ -51,9 +51,9 @@ func main() {
 			ApplicationShouldTerminateAfterLastWindowClosed: false,
 		},
 		SingleInstance: &application.SingleInstanceOptions{
-			UniqueID: "link.eiot.ztools",
+			UniqueID: "com.opentools.app",
 			OnSecondInstanceLaunch: func(data application.SecondInstanceData) {
-				log.Println("[ZTools] second instance")
+				log.Println("[OpenTools] second instance")
 			},
 			ExitCode: 0,
 		},
@@ -67,7 +67,7 @@ func main() {
 	}
 
 	mainWin := app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title:             "ZTools",
+		Title:             "OpenTools",
 		Width:             winW,
 		Height:            winH,
 		X:                 cx,
@@ -102,7 +102,7 @@ func main() {
 	go mcp.StartMCPServer()
 	clipSvc.StartMonitor()
 
-	log.Printf("[ZTools] version %s", updater.CurrentVersion())
+	log.Printf("[OpenTools] version %s", updater.CurrentVersion())
 
 	go registerGlobalHotkey(mainWin)
 
@@ -157,11 +157,11 @@ func modAlt() hotkey.Modifier {
 func getDataDir() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return filepath.Join(os.TempDir(), "ztools-data")
+		return filepath.Join(os.TempDir(), "opentools-data")
 	}
-	dir := filepath.Join(home, ".ztools", "data")
+	dir := filepath.Join(home, ".opentools", "data")
 	if err := os.MkdirAll(dir, 0755); err != nil {
-		return filepath.Join(os.TempDir(), "ztools-data")
+		return filepath.Join(os.TempDir(), "opentools-data")
 	}
 	return dir
 }

@@ -21,7 +21,7 @@ func (s *FloatBallService) Show(app *application.App) {
 	}
 
 	s.win = app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title:  "ZTools Float",
+		Title:  "OpenTools Float",
 		Width:  48,
 		Height: 48,
 		Mac: application.MacWindow{

@@ -30,7 +30,7 @@ func NewEngine(db *database.DB, cfg Config) *Engine {
 		client: client,
 		config: cfg,
 		db:     db,
-		path:   cfg.Dir + "/ztools-backup.json",
+		path:   cfg.Dir + "/opentools-backup.json",
 	}
 }
 

@@ -144,7 +144,7 @@ func (r *CompatRuntime) Execute(name, featureCode string, args map[string]any) (
 	db.Set("promises", dbPromises)
 	ztools.Set("db", db)
 
-	ztools.Set("getAppName", func() string { return "ZTools" })
+	ztools.Set("getAppName", func() string { return "OpenTools" })
 	ztools.Set("getAppVersion", func() string { return "2.4.1" })
 	ztools.Set("getNativeId", func() string { return "ztools-wails-" + name })
 	ztools.Set("isMacOs", func() bool { return false })

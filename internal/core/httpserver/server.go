@@ -65,13 +65,13 @@ func (s *Server) Port() int {
 }
 
 func writePortFile(port int) {
-	dir := filepath.Join(os.TempDir(), "ztools")
+	dir := filepath.Join(os.TempDir(), "opentools")
 	os.MkdirAll(dir, 0755)
 	os.WriteFile(filepath.Join(dir, "http-port"), []byte(fmt.Sprintf("%d", port)), 0644)
 }
 
 func removePortFile() {
-	os.Remove(filepath.Join(os.TempDir(), "ztools", "http-port"))
+	os.Remove(filepath.Join(os.TempDir(), "opentools", "http-port"))
 }
 
 func jsonResp(w http.ResponseWriter, data interface{}) {
@@ -87,7 +87,7 @@ func jsonError(w http.ResponseWriter, msg string, code int) {
 
 func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request) {
 	jsonResp(w, statusResponse{
-		Name:    "ZTools",
+		Name:    "OpenTools",
 		Version: "2.4.1",
 		Running: true,
 	})

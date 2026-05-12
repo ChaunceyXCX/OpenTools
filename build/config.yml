@@ -1,12 +1,12 @@
 version: '3'
 
 info:
-  companyName: "ZTools"
-  productName: "ZTools"
-  productIdentifier: "link.eiot.ztools"
-  description: "A high-performance launcher and plugin platform"
-  copyright: "(c) 2024, ZTools"
-  comments: "ZTools - Wails Port"
+  companyName: "OpenTools"
+  productName: "OpenTools"
+  productIdentifier: "com.opentools.app"
+  description: "Open source launcher and plugin platform"
+  copyright: "(c) 2024, OpenTools"
+  comments: "OpenTools - Wails Port"
   version: "2.4.1"
   # cfBundleIconName: "appicon" # The macOS icon name in Assets.car icon bundles (optional)
   #                               # Should match the name of your .icon file without the extension

@@ -85,7 +85,7 @@ func handleRequest(req jsonrpcRequest) jsonrpcResponse {
 			Result: map[string]any{
 				"protocolVersion": "2024-11-05",
 				"capabilities":    map[string]any{"tools": map[string]any{}},
-				"serverInfo":      map[string]any{"name": "ztools-mcp", "version": "1.0.0"},
+				"serverInfo":      map[string]any{"name": "opentools-mcp", "version": "1.0.0"},
 			},
 		}
 	case "tools/list":

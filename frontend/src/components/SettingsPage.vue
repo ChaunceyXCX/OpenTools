@@ -85,7 +85,7 @@ async function onSyncPush() {
 
     <!-- About -->
     <section class="section about">
-      <div class="about-row"><span>Version</span><span>2.4.1 (Wails Port)</span></div>
+      <div class="about-row"><span>Version</span><span>2.4.1 (OpenTools)</span></div>
       <div class="about-row"><span>Runtime</span><span>Go + Wails v3</span></div>
       <div class="about-row"><span>Frontend</span><span>Vue 3 + Pinia + Fuse.js</span></div>
     </section>

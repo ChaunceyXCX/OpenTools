@@ -63,7 +63,7 @@ func DownloadUpdate(url, destDir string) (string, error) {
 		return "", fmt.Errorf("mkdir: %w", err)
 	}
 
-	outPath := filepath.Join(destDir, "ztools-update.zip")
+	outPath := filepath.Join(destDir, "opentools-update.zip")
 	out, err := os.Create(outPath)
 	if err != nil {
 		return "", fmt.Errorf("create: %w", err)

@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=ZTools
-Exec=ZTools
-Icon=ZTools
+Name=OpenTools
+Exec=OpenTools
+Icon=OpenTools
 Categories=Development;
 Terminal=false
 Keywords=wails
