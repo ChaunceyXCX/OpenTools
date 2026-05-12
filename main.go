@@ -4,6 +4,7 @@ import (
 	"embed"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 
 	"github.com/ChaunceyXCX/OpenTools/internal/api"
@@ -12,6 +13,7 @@ import (
 	"github.com/ChaunceyXCX/OpenTools/internal/core/updater"
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
+	"golang.design/x/hotkey"
 )
 
 //go:embed all:frontend/dist
@@ -51,49 +53,36 @@ func main() {
 		SingleInstance: &application.SingleInstanceOptions{
 			UniqueID: "link.eiot.ztools",
 			OnSecondInstanceLaunch: func(data application.SecondInstanceData) {
-				log.Println("[ZTools] second instance detected, focusing existing window")
+				log.Println("[ZTools] second instance")
 			},
 			ExitCode: 0,
 		},
-		KeyBindings: map[string]func(window application.Window){
-			"optionoralt+z": func(window application.Window) {
-				toggleWindow(window)
-			},
-			"escape": func(window application.Window) {
-				window.Hide()
-			},
-		},
 	})
 
-	mainWin := app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title: "ZTools",
-		Mac: application.MacWindow{
-			InvisibleTitleBarHeight: 50,
-			Backdrop:                application.MacBackdropTranslucent,
-			TitleBar:                application.MacTitleBarHiddenInset,
-		},
-		URL: "/",
-	})
-
-	if saved := api.LoadWindowState(); saved != nil {
-		mainWin.SetBounds(application.Rect{
-			X: saved.X, Y: saved.Y,
-			Width: saved.Width, Height: saved.Height,
-		})
+	winW, winH := 800, 600
+	cx, cy := 0, 0
+	if primary := app.Screen.GetPrimary(); primary != nil {
+		cx = primary.Bounds.X + (primary.Bounds.Width-winW)/2
+		cy = primary.Bounds.Y + (primary.Bounds.Height-winH)/3
 	}
 
-	mainWin.OnWindowEvent(events.Common.WindowDidMove, func(event *application.WindowEvent) {
-		go saveWindowState(mainWin)
+	mainWin := app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Title:             "ZTools",
+		Width:             winW,
+		Height:            winH,
+		X:                 cx,
+		Y:                 cy,
+		Frameless:         true,
+		AlwaysOnTop:       true,
+		BackgroundColour:  application.NewRGB(27, 38, 54),
+		URL:               "/",
 	})
-	mainWin.OnWindowEvent(events.Common.WindowDidResize, func(event *application.WindowEvent) {
-		go saveWindowState(mainWin)
-	})
+
+	mainWin.Hide()
 
 	mainWin.OnWindowEvent(events.Common.WindowClosing, func(event *application.WindowEvent) {
-		saveWindowState(mainWin)
 		mainWin.Hide()
 	})
-
 	mainWin.OnWindowEvent(events.Common.WindowLostFocus, func(event *application.WindowEvent) {
 		mainWin.Hide()
 	})
@@ -101,49 +90,68 @@ func main() {
 	systray := app.SystemTray.New()
 	systray.AttachWindow(mainWin)
 	systray.WindowDebounce(200)
-
 	systray.OnClick(func() {
-		mainWin.Show()
+		toggleWindow(mainWin)
 	})
 
 	httpSrv := httpserver.New(17891)
 	if err := httpSrv.Start(); err != nil {
-		log.Printf("[HTTP] failed to start: %v", err)
+		log.Printf("[HTTP] failed: %v", err)
 	}
 
 	go mcp.StartMCPServer()
-
 	clipSvc.StartMonitor()
 
 	log.Printf("[ZTools] version %s", updater.CurrentVersion())
 
+	go registerGlobalHotkey(mainWin)
+
 	app.OnShutdown(func() {
-		log.Println("[ZTools] shutting down")
 		clipSvc.StopMonitor()
 		httpSrv.Stop()
 		api.CloseDatabase()
 	})
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt)
+	go func() {
+		<-sigCh
+		app.Quit()
+	}()
 
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func saveWindowState(win application.Window) {
-	b := win.Bounds()
-	api.SaveWindowState(&api.WindowState{
-		X: b.X, Y: b.Y,
-		Width: b.Width, Height: b.Height,
-	})
+func registerGlobalHotkey(win application.Window) {
+	hk := hotkey.New([]hotkey.Modifier{modAlt()}, hotkey.KeyZ)
+	if hk == nil {
+		log.Println("[Hotkey] failed to register Alt+Z")
+		return
+	}
+	if err := hk.Register(); err != nil {
+		log.Printf("[Hotkey] register Alt+Z error: %v", err)
+		return
+	}
+	log.Println("[Hotkey] Alt+Z registered (global)")
+	for range hk.Keydown() {
+		toggleWindow(win)
+	}
 }
 
 func toggleWindow(win application.Window) {
 	if win.IsVisible() {
 		win.Hide()
 	} else {
+		win.Center()
 		win.Show()
 		win.Focus()
 	}
+}
+
+func modAlt() hotkey.Modifier {
+	return hotkey.Mod1 // Mod1 = Alt on X11/Linux
 }
 
 func getDataDir() string {

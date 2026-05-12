@@ -11,6 +11,7 @@ require (
 	github.com/studio-b12/gowebdav v0.12.0
 	github.com/wailsapp/wails/v3 v3.0.0-alpha.90
 	go.etcd.io/bbolt v1.4.3
+	golang.design/x/hotkey v0.4.1
 )
 
 require (
