@@ -175,6 +175,47 @@ OpenTools/
 >
 > **保留不变**：`window.ztools.*` 插件 API 名称（插件生态标准）、`ZTOOLS/` 数据库命名空间（数据兼容）。
 
+## 🖥 平台适配计划
+
+| 功能 | Linux | macOS | Windows | 实现方式 |
+|------|-------|-------|---------|----------|
+| 应用扫描 | ✅ XDG .desktop | 🟡 plist 解析 | 🟡 注册表 + .lnk | 平台 Go 文件 |
+| 指令启动 | ✅ os/exec | ✅ `open -a` | ✅ `cmd /c start` | `internal/core/launcher/` |
+| 全局快捷键 | ✅ X11 hotkey | 🟡 Cmd+Z | 🟡 Alt+Z | `golang.design/x/hotkey` |
+| 剪贴板监控 | ✅ atotto/clipboard | ✅ | ✅ | 500ms polling |
+| 截图 | 🟡 kbinani/screenshot | 🟡 screencapture CLI | 🟡 user32 CGo | `internal/native/screenshot/` |
+| 取色器 | 🟡 colorpicker CLI | 🟡 NSColorSampler | 🟡 GetPixel CGo | `internal/native/colorpicker/` |
+| 鼠标监听 | ❌ 未实现 | ❌ 未实现 | ❌ 未实现 | 需平台 C API |
+
+### Linux 截图实现
+
+```go
+// internal/native/screenshot/screenshot_linux.go
+import "github.com/kbinani/screenshot"
+func Capture() ([]byte, error) {
+    img, _ := screenshot.CaptureDisplay(0)
+    // encode to PNG bytes
+}
+```
+
+### macOS .app 扫描实现
+
+```go
+// internal/core/scanner/darwin.go
+// 1. Walk /Applications, ~/Applications
+// 2. Read .app/Contents/Info.plist (use "defaults read" CLI or Go plist lib)
+// 3. Extract: CFBundleName, CFBundleExecutable, CFBundleIconFile
+```
+
+### Windows .lnk 扫描实现
+
+```go
+// internal/core/scanner/windows.go  
+// 1. Walk %ProgramData%/Microsoft/Windows/Start Menu
+// 2. Parse .lnk files using github.com/parsiya/golnk
+// 3. Extract: Name, TargetPath, IconLocation
+```
+
 ## 📄 许可证
 
 [MIT](./LICENSE)

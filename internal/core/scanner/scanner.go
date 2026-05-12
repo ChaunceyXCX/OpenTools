@@ -1,7 +1,6 @@
 package scanner
 
 import (
-	"log"
 	"runtime"
 )
 
@@ -10,11 +9,9 @@ func ScanApplications() ([]Command, error) {
 	case "linux":
 		return ScanLinuxApplications()
 	case "darwin":
-		log.Println("[Scanner] macOS scanning not yet implemented")
-		return nil, nil
+		return ScanDarwinApplications()
 	case "windows":
-		log.Println("[Scanner] Windows scanning not yet implemented")
-		return nil, nil
+		return ScanWindowsApplications()
 	default:
 		return nil, nil
 	}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/ChaunceyXCX/OpenTools/internal/core/launcher"
 	"github.com/ChaunceyXCX/OpenTools/internal/core/scanner"
+	"github.com/ChaunceyXCX/OpenTools/internal/native/screenshot"
 )
 
 type CommandsService struct{}
@@ -41,4 +42,12 @@ func (s *CommandsService) Launch(path string) LaunchResult {
 
 func (s *CommandsService) ResizeWindow(height int) bool {
 	return true
+}
+
+func (s *CommandsService) Screenshot() (string, error) {
+	data, err := screenshot.Capture()
+	if err != nil {
+		return "", err
+	}
+	return data, nil
 }
