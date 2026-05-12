@@ -23,6 +23,7 @@ func main() {
 	}
 
 	clipSvc := api.NewClipboardService()
+	pluginSvc := api.NewPluginService()
 
 	app := application.New(application.Options{
 		Name:        "ZTools",
@@ -32,6 +33,7 @@ func main() {
 			application.NewService(api.NewDatabaseService()),
 			application.NewService(api.NewCommandsService()),
 			application.NewService(clipSvc),
+			application.NewService(pluginSvc),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
