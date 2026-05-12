@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	"github.com/ChaunceyXCX/OpenTools/internal/api"
-	"github.com/ChaunceyXCX/OpenTools/internal/core"
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 )
@@ -17,12 +16,6 @@ var assets embed.FS
 
 func main() {
 	dataDir := getDataDir()
-
-	lock, err := core.NewLockFile(dataDir)
-	if err != nil {
-		log.Fatalf("[ZTools] %v", err)
-	}
-	defer lock.Release()
 
 	dbPath := filepath.Join(dataDir, "ztools.db")
 	if err := api.InitDatabase(dbPath); err != nil {
@@ -42,6 +35,21 @@ func main() {
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: false,
 		},
+		SingleInstance: &application.SingleInstanceOptions{
+			UniqueID: "link.eiot.ztools",
+			OnSecondInstanceLaunch: func(data application.SecondInstanceData) {
+				log.Println("[ZTools] second instance detected, focusing existing window")
+			},
+			ExitCode: 0,
+		},
+		KeyBindings: map[string]func(window application.Window){
+			"optionoralt+z": func(window application.Window) {
+				toggleWindow(window)
+			},
+			"escape": func(window application.Window) {
+				window.Hide()
+			},
+		},
 	})
 
 	mainWin := app.Window.NewWithOptions(application.WebviewWindowOptions{
@@ -54,13 +62,36 @@ func main() {
 		URL: "/",
 	})
 
+	if saved := api.LoadWindowState(); saved != nil {
+		mainWin.SetBounds(application.Rect{
+			X: saved.X, Y: saved.Y,
+			Width: saved.Width, Height: saved.Height,
+		})
+	}
+
+	mainWin.OnWindowEvent(events.Common.WindowDidMove, func(event *application.WindowEvent) {
+		go saveWindowState(mainWin)
+	})
+	mainWin.OnWindowEvent(events.Common.WindowDidResize, func(event *application.WindowEvent) {
+		go saveWindowState(mainWin)
+	})
+
 	mainWin.OnWindowEvent(events.Common.WindowClosing, func(event *application.WindowEvent) {
+		saveWindowState(mainWin)
+		mainWin.Hide()
+	})
+
+	mainWin.OnWindowEvent(events.Common.WindowLostFocus, func(event *application.WindowEvent) {
 		mainWin.Hide()
 	})
 
 	systray := app.SystemTray.New()
 	systray.AttachWindow(mainWin)
 	systray.WindowDebounce(200)
+
+	systray.OnClick(func() {
+		mainWin.Show()
+	})
 
 	app.OnShutdown(func() {
 		log.Println("[ZTools] shutting down")
@@ -69,6 +100,23 @@ func main() {
 
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
+	}
+}
+
+func saveWindowState(win application.Window) {
+	b := win.Bounds()
+	api.SaveWindowState(&api.WindowState{
+		X: b.X, Y: b.Y,
+		Width: b.Width, Height: b.Height,
+	})
+}
+
+func toggleWindow(win application.Window) {
+	if win.IsVisible() {
+		win.Hide()
+	} else {
+		win.Show()
+		win.Focus()
 	}
 }
 
