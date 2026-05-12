@@ -1,0 +1,28 @@
+html, body { overflow: hidden; margin: 0; padding: 0; width: 100%; height: 100%; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
+:root {
+  --bg-color: #1b2636;
+  --text-color: #e0e0e0;
+  --text-secondary: #8a9aaa;
+  --border-color: #2a3748;
+  --divider-color: rgba(255,255,255,0.06);
+  --control-bg: #2a3748;
+  --hover-bg: #2a3748;
+  --active-bg: #1e2a38;
+  --primary-color: #4a90d9;
+  --primary-gradient: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
+  --text-on-primary: #ffffff;
+  --highlight-color: #e8a838;
+  --card-bg: #222f40;
+  --shadow: 0 4px 16px rgba(0,0,0,0.3);
+  --radius: 8px;
+  --radius-sm: 6px;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a3748; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a4a5e; }
+
+* { -webkit-font-smoothing: antialiased; }
