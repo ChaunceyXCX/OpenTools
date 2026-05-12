@@ -1,12 +1,32 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useCommandStore } from '../stores/commandStore'
 
 const store = useCommandStore()
+const input = ref<HTMLInputElement>()
+
+const emit = defineEmits<{
+  keynav: [dir: 'up' | 'down']
+  confirm: []
+}>()
 
 onMounted(() => {
   store.loadCommands()
+  input.value?.focus()
 })
+
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'ArrowDown') {
+    e.preventDefault()
+    emit('keynav', 'down')
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    emit('keynav', 'up')
+  } else if (e.key === 'Enter') {
+    e.preventDefault()
+    emit('confirm')
+  }
+}
 </script>
 
 <template>
@@ -16,8 +36,11 @@ onMounted(() => {
       v-model="store.query"
       type="text"
       class="search-input"
-      placeholder="Search applications, commands..."
+      :placeholder="store.loading ? 'Scanning applications...' : 'Search apps, type a command...'"
       autofocus
+      spellcheck="false"
+      autocomplete="off"
+      @keydown="onKeydown"
     />
   </div>
 </template>
