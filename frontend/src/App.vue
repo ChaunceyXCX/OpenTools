@@ -6,9 +6,10 @@ import SearchBox from './components/search/SearchBox.vue'
 import SearchResults from './components/search/SearchResults.vue'
 import SettingsPage from './components/SettingsPage.vue'
 import ClipboardPanel from './components/ClipboardPanel.vue'
+import PluginMarket from './components/PluginMarket.vue'
 
-type Tab = 'search' | 'clipboard' | 'settings'
-const tabs: Tab[] = ['search', 'clipboard', 'settings']
+type Tab = 'search' | 'clipboard' | 'plugins' | 'settings'
+const tabs: Tab[] = ['search', 'clipboard', 'plugins', 'settings']
 const activeTab = ref<Tab>('search')
 const selectedIndex = ref(0)
 const windowVisible = ref(false)
@@ -64,6 +65,10 @@ function onGlobalKey(e: KeyboardEvent) {
           @click="activeTab = 'clipboard'">
           📋 {{ $t('tab.clipboard') }}
         </button>
+        <button :class="['tab', { active: activeTab === 'plugins' }]"
+          @click="activeTab = 'plugins'">
+          🧩 Plugins
+        </button>
         <button :class="['tab', { active: activeTab === 'settings' }]"
           @click="activeTab = 'settings'">
           ⚙ {{ $t('tab.settings') }}
@@ -97,6 +102,7 @@ function onGlobalKey(e: KeyboardEvent) {
       </template>
 
       <ClipboardPanel v-else-if="activeTab === 'clipboard'" />
+      <PluginMarket v-else-if="activeTab === 'plugins'" />
       <SettingsPage v-else-if="activeTab === 'settings'" />
     </div>
   </div>

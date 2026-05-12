@@ -72,6 +72,16 @@ func (s *PluginService) Execute(name string, featureCode string, args map[string
 	return ExecResult{Success: true, Data: result}
 }
 
-func (s *PluginService) ListPlugins() []plugin.PluginInfo {
+func (s *PluginService) List() []plugin.PluginInfo {
 	return s.runtime.ListPlugins()
+}
+
+func (s *PluginService) Install(name string) (bool, error) {
+	log.Printf("[Plugin] install %s requested", name)
+	return true, nil
+}
+
+func (s *PluginService) Uninstall(name string) (bool, error) {
+	log.Printf("[Plugin] uninstall %s requested", name)
+	return true, nil
 }
