@@ -6,11 +6,13 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 
 	"github.com/ChaunceyXCX/OpenTools/internal/api"
 	"github.com/ChaunceyXCX/OpenTools/internal/core/httpserver"
 	"github.com/ChaunceyXCX/OpenTools/internal/core/mcp"
 	"github.com/ChaunceyXCX/OpenTools/internal/core/updater"
+	"github.com/ChaunceyXCX/OpenTools/internal/native"
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 	"golang.design/x/hotkey"
@@ -80,6 +82,11 @@ func main() {
 
 	mainWin.Hide()
 
+	mainWin.OnWindowEvent(events.Common.WindowShow, func(event *application.WindowEvent) {
+		if runtime.GOOS == "linux" {
+			native.SetFloatingWindow(mainWin.NativeWindow())
+		}
+	})
 	mainWin.OnWindowEvent(events.Common.WindowClosing, func(event *application.WindowEvent) {
 		mainWin.Hide()
 	})
