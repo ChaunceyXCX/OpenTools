@@ -113,7 +113,7 @@ func extractPinyinAcronym(name string) string {
 	var result strings.Builder
 	for _, r := range name {
 		if unicode.Is(unicode.Han, r) {
-			py := pinyin.Pinyin(string(r), pinyin.NewArgs())
+			py := pinyin.Pinyin(string(r), pinyin.Args{Style: pinyin.FirstLetter})
 			if len(py) > 0 && len(py[0]) > 0 {
 				result.WriteString(string(py[0][0]))
 			}

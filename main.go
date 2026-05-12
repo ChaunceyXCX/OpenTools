@@ -8,6 +8,7 @@ import (
 
 	"github.com/ChaunceyXCX/OpenTools/internal/api"
 	"github.com/ChaunceyXCX/OpenTools/internal/core/httpserver"
+	"github.com/ChaunceyXCX/OpenTools/internal/core/mcp"
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 )
@@ -25,6 +26,7 @@ func main() {
 
 	clipSvc := api.NewClipboardService()
 	pluginSvc := api.NewPluginService()
+	historySvc := api.NewHistoryService()
 
 	app := application.New(application.Options{
 		Name:        "ZTools",
@@ -35,6 +37,7 @@ func main() {
 			application.NewService(api.NewCommandsService()),
 			application.NewService(clipSvc),
 			application.NewService(pluginSvc),
+			application.NewService(historySvc),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
@@ -104,6 +107,8 @@ func main() {
 	if err := httpSrv.Start(); err != nil {
 		log.Printf("[HTTP] failed to start: %v", err)
 	}
+
+	go mcp.StartMCPServer()
 
 	clipSvc.StartMonitor()
 
