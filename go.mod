@@ -2,7 +2,10 @@ module github.com/ChaunceyXCX/OpenTools
 
 go 1.25
 
-require github.com/wailsapp/wails/v3 v3.0.0-alpha.90
+require (
+	github.com/wailsapp/wails/v3 v3.0.0-alpha.90
+	go.etcd.io/bbolt v1.4.3
+)
 
 require (
 	dario.cat/mergo v1.0.2 // indirect

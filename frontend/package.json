@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@wailsio/runtime": "latest",
+    "fuse.js": "^7.3.0",
+    "pinia": "^3.0.4",
     "vue": "^3.2.45"
   },
   "devDependencies": {
