@@ -82,11 +82,10 @@ func main() {
 
 	mainWin.Hide()
 
-	mainWin.OnWindowEvent(events.Common.WindowShow, func(event *application.WindowEvent) {
-		if runtime.GOOS == "linux" {
-			native.SetFloatingWindow(mainWin.NativeWindow())
-		}
-	})
+	if runtime.GOOS == "linux" {
+		native.SetFloatingWindow(mainWin.NativeWindow())
+	}
+
 	mainWin.OnWindowEvent(events.Common.WindowClosing, func(event *application.WindowEvent) {
 		mainWin.Hide()
 	})

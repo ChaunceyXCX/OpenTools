@@ -11,41 +11,36 @@ package native
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
 
-void set_popup_hint(GtkWindow *win) {
-	gtk_window_set_type_hint(win, GDK_WINDOW_TYPE_HINT_POPUP_MENU);
-}
-
-void set_skip_taskbar(GtkWindow *win) {
-	gtk_window_set_skip_taskbar_hint(win, TRUE);
-	gtk_window_set_skip_pager_hint(win, TRUE);
-}
-
-void set_window_floating(GtkWindow *win) {
-	// Get the X11 display and window
-	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
+static void apply_ewmh(GtkWindow *win) {
 	GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(win));
 	if (gdk_window == NULL) return;
-
+	GdkDisplay *display = gdk_window_get_display(gdk_window);
 	Display *xdisplay = gdk_x11_display_get_xdisplay(display);
 	Window xwindow = gdk_x11_window_get_xid(gdk_window);
 
-	// Set _NET_WM_WINDOW_TYPE to _NET_WM_WINDOW_TYPE_POPUP_MENU
-	// This tells tiling WMs to float this window
-	Atom net_wm_window_type = XInternAtom(xdisplay, "_NET_WM_WINDOW_TYPE", False);
-	Atom net_wm_window_type_popup = XInternAtom(xdisplay, "_NET_WM_WINDOW_TYPE_POPUP_MENU", False);
-	XChangeProperty(xdisplay, xwindow, net_wm_window_type, XA_ATOM, 32,
-		PropModeReplace, (unsigned char *)&net_wm_window_type_popup, 1);
+	Atom type_atom = XInternAtom(xdisplay, "_NET_WM_WINDOW_TYPE", False);
+	Atom popup = XInternAtom(xdisplay, "_NET_WM_WINDOW_TYPE_POPUP_MENU", False);
+	XChangeProperty(xdisplay, xwindow, type_atom, XA_ATOM, 32,
+		PropModeReplace, (unsigned char *)&popup, 1);
 
-	// Set _NET_WM_STATE: SKIP_TASKBAR | SKIP_PAGER | ABOVE
-	Atom net_wm_state = XInternAtom(xdisplay, "_NET_WM_STATE", False);
-	Atom skip_taskbar = XInternAtom(xdisplay, "_NET_WM_STATE_SKIP_TASKBAR", False);
-	Atom skip_pager = XInternAtom(xdisplay, "_NET_WM_STATE_SKIP_PAGER", False);
+	Atom state_atom = XInternAtom(xdisplay, "_NET_WM_STATE", False);
+	Atom skip_tb = XInternAtom(xdisplay, "_NET_WM_STATE_SKIP_TASKBAR", False);
+	Atom skip_pg = XInternAtom(xdisplay, "_NET_WM_STATE_SKIP_PAGER", False);
 	Atom above = XInternAtom(xdisplay, "_NET_WM_STATE_ABOVE", False);
-	Atom atoms[] = {skip_taskbar, skip_pager, above};
-	XChangeProperty(xdisplay, xwindow, net_wm_state, XA_ATOM, 32,
-		PropModeReplace, (unsigned char *)atoms, 3);
-
+	Atom states[] = {skip_tb, skip_pg, above};
+	XChangeProperty(xdisplay, xwindow, state_atom, XA_ATOM, 32,
+		PropModeReplace, (unsigned char *)&states, 3);
 	XFlush(xdisplay);
+}
+
+static void on_realize(GtkWidget *widget, gpointer data) {
+	apply_ewmh(GTK_WINDOW(widget));
+}
+
+void set_floating(GtkWindow *win) {
+	gtk_widget_realize(GTK_WIDGET(win));
+	apply_ewmh(win);
+	g_signal_connect_after(win, "realize", G_CALLBACK(on_realize), NULL);
 }
 */
 import "C"
@@ -55,5 +50,5 @@ func SetFloatingWindow(nativeWindow unsafe.Pointer) {
 	if nativeWindow == nil {
 		return
 	}
-	C.set_window_floating((*C.GtkWindow)(nativeWindow))
+	C.set_floating((*C.GtkWindow)(nativeWindow))
 }
