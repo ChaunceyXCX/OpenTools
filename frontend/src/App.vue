@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useCommandDataStore } from './stores/commandDataStore'
 import { useWindowStore } from './stores/windowStore'
 import SearchBox from './components/search/SearchBox.vue'
@@ -8,11 +8,21 @@ import SettingsPage from './components/SettingsPage.vue'
 import ClipboardPanel from './components/ClipboardPanel.vue'
 
 type Tab = 'search' | 'clipboard' | 'settings'
+const tabs: Tab[] = ['search', 'clipboard', 'settings']
 const activeTab = ref<Tab>('search')
 const selectedIndex = ref(0)
+const windowVisible = ref(false)
 
 const cmdStore = useCommandDataStore()
 const winStore = useWindowStore()
+
+setTimeout(() => windowVisible.value = true, 50)
+
+watch(() => cmdStore.results.length, (n) => {
+  if (n > 0 && activeTab.value === 'search') {
+    try { (window as any).__resizeHeight?.(Math.min(n * 48 + 100, 600)) } catch { }
+  }
+})
 
 function onKeynav(dir: 'up' | 'down') {
   const len = cmdStore.results.length
@@ -27,13 +37,23 @@ function onConfirm() {
   if (cmd) cmdStore.launch(cmd)
 }
 
-function onClosePlugin() {
-  winStore.exitPlugin()
+function onClosePlugin() { winStore.exitPlugin() }
+
+function onGlobalKey(e: KeyboardEvent) {
+  if (e.key === 'Tab') {
+    e.preventDefault()
+    const idx = tabs.indexOf(activeTab.value)
+    activeTab.value = tabs[(idx + 1) % tabs.length]
+    selectedIndex.value = 0
+  }
 }
 </script>
 
 <template>
-  <div class="app-container" :class="{ 'app-container__plugin': winStore.viewMode === 'plugin' }">
+  <div class="app-container" :class="{
+    'app-container__plugin': winStore.viewMode === 'plugin',
+    'visible': windowVisible
+  }" @keydown="onGlobalKey">
     <div class="search-window">
       <div class="tab-bar">
         <button :class="['tab', { active: activeTab === 'search' }]"
@@ -92,6 +112,13 @@ function onClosePlugin() {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.app-container.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 .search-window {
   display: flex; flex-direction: column;

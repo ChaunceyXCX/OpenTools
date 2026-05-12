@@ -38,3 +38,7 @@ func (s *CommandsService) Launch(path string) LaunchResult {
 	}
 	return LaunchResult{Success: true}
 }
+
+func (s *CommandsService) ResizeWindow(height int) bool {
+	return true
+}
