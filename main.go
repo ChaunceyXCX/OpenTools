@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/ChaunceyXCX/OpenTools/internal/api"
+	"github.com/ChaunceyXCX/OpenTools/internal/core/httpserver"
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/events"
 )
@@ -99,11 +100,17 @@ func main() {
 		mainWin.Show()
 	})
 
+	httpSrv := httpserver.New(17891)
+	if err := httpSrv.Start(); err != nil {
+		log.Printf("[HTTP] failed to start: %v", err)
+	}
+
 	clipSvc.StartMonitor()
 
 	app.OnShutdown(func() {
 		log.Println("[ZTools] shutting down")
 		clipSvc.StopMonitor()
+		httpSrv.Stop()
 		api.CloseDatabase()
 	})
 
