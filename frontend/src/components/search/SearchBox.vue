@@ -50,7 +50,7 @@ function onKeydown(e: KeyboardEvent) {
         v-model="commandStore.searchQuery"
         type="text"
         class="search-input"
-        :placeholder="windowStore.viewMode === 'plugin' ? 'Search in plugin...' : 'Search apps, type a command...'"
+        :placeholder="windowStore.viewMode === 'plugin' ? $t('search.pluginPlaceholder') : $t('search.placeholder')"
         autofocus
         spellcheck="false"
         autocomplete="off"

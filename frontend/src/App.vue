@@ -38,15 +38,15 @@ function onClosePlugin() {
       <div class="tab-bar">
         <button :class="['tab', { active: activeTab === 'search' }]"
           @click="activeTab = 'search'; selectedIndex = 0">
-          ⌕ Search
+          ⌕ {{ $t('tab.search') }}
         </button>
         <button :class="['tab', { active: activeTab === 'clipboard' }]"
           @click="activeTab = 'clipboard'">
-          📋 Clipboard
+          📋 {{ $t('tab.clipboard') }}
         </button>
         <button :class="['tab', { active: activeTab === 'settings' }]"
           @click="activeTab = 'settings'">
-          ⚙ Settings
+          ⚙ {{ $t('tab.settings') }}
         </button>
       </div>
 

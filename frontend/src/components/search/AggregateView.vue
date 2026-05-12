@@ -39,7 +39,7 @@ const recentCommands = store.allCommands.slice(0, 8)
         <span class="section-title">Welcome</span>
       </div>
       <div class="section-content welcome-content">
-        Press <kbd>Alt+Z</kbd> to toggle · Type to search
+        {{ $t('search.shortcut') }}
       </div>
     </div>
   </div>
